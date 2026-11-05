@@ -133,7 +133,7 @@ async def run_scan(
 
         try:
             watched_artists = await _load_watched_artists(session)
-            all_adapters = adapters or build_adapters()
+            all_adapters = adapters if adapters is not None else build_adapters()
 
             if request.sources:
                 selected = {k: v for k, v in all_adapters.items() if k in request.sources}
