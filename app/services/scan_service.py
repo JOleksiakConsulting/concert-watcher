@@ -65,9 +65,6 @@ async def _run_adapter(
     country_codes: list[str],
     watched_artists: list[WatchedArtistRef],
 ) -> tuple[SourceScanResult, int, int, list[RawEvent]]:
-    if not getattr(adapter, "enabled", True):
-        return SourceScanResult(status="skipped", events_found=0), 0, 0, []
-
     start = time.perf_counter()
     events: list[RawEvent] = []
 
