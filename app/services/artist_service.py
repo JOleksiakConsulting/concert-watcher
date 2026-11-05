@@ -99,7 +99,7 @@ async def update_artist(session: AsyncSession, artist: WatchedArtist, data: Arti
             session.add(ArtistCountry(artist_id=artist.id, country_code=country.upper()))
 
     await session.commit()
-    await session.refresh(artist, ["aliases", "countries"])
+    await session.refresh(artist, ["updated_at", "aliases", "countries"])
     return _to_response(artist)
 
 
