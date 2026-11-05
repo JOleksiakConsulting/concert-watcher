@@ -68,15 +68,14 @@ async def _run_adapter(
     start = time.perf_counter()
     events: list[RawEvent] = []
 
-    if hasattr(adapter, "last_http_requests"):
-        adapter.last_http_requests = 0
+    adapter.last_http_requests = 0
 
     try:
         for country in country_codes:
             batch = await adapter.fetch_events(country, watched_artists)
             events.extend(batch)
         duration_ms = int((time.perf_counter() - start) * 1000)
-        http_requests = getattr(adapter, "last_http_requests", 0)
+        http_requests = adapter.last_http_requests
         return (
             SourceScanResult(status="ok", events_found=len(events)),
             duration_ms,
@@ -92,7 +91,7 @@ async def _run_adapter(
                 error=_safe_adapter_error(exc),
             ),
             duration_ms,
-            getattr(adapter, "last_http_requests", 0),
+            adapter.last_http_requests,
             events,
         )
     except Exception as exc:
@@ -104,7 +103,7 @@ async def _run_adapter(
                 error=_safe_adapter_error(exc),
             ),
             duration_ms,
-            getattr(adapter, "last_http_requests", 0),
+            adapter.last_http_requests,
             events,
         )
 

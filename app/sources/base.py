@@ -28,6 +28,7 @@ class WatchedArtistRef:
 
 class SourceAdapter(ABC):
     name: str
+    last_http_requests: int = 0
 
     @abstractmethod
     async def fetch_events(
