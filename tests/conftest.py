@@ -1,4 +1,8 @@
-import pytest
+import os
+
+os.environ["APP_API_KEY"] = "test-api-key"
+
+import pytest  # noqa: E402
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 

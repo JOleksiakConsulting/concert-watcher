@@ -9,6 +9,7 @@ from app.db.paths import ensure_sqlite_directory
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    settings.ensure_api_key_configured()
     ensure_sqlite_directory(settings.database_url)
     yield
 

@@ -1,10 +1,12 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+PLACEHOLDER_API_KEYS = frozenset({"", "change-me"})
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    app_api_key: str = "change-me"
+    app_api_key: str = ""
     database_url: str = "sqlite+aiosqlite:///./data/concert-watcher.db"
     ticketmaster_api_key: str = ""
     default_countries: str = "PL"
@@ -44,6 +46,13 @@ class Settings(BaseSettings):
     @property
     def smtp_recipient_list(self) -> list[str]:
         return [address.strip() for address in self.smtp_to.split(",") if address.strip()]
+
+    def ensure_api_key_configured(self) -> None:
+        if self.app_api_key.strip() in PLACEHOLDER_API_KEYS:
+            raise RuntimeError(
+                "APP_API_KEY is not set. Set it in .env to a random value, e.g. "
+                'the output of: python -c "import secrets; print(secrets.token_urlsafe(32))"'
+            )
 
 
 settings = Settings()

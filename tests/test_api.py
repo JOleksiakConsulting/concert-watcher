@@ -4,6 +4,8 @@ from datetime import date, timedelta
 import httpx
 import pytest
 
+from app.core.config import settings
+from app.main import app, lifespan
 from app.schemas.events import EventParticipant, EventStatus, RawEvent
 from app.schemas.scan import ScanRequest
 from app.services.scan_service import ScanInProgressError, _run_adapter, run_scan
@@ -49,6 +51,23 @@ async def test_artists_crud(client, api_headers):
 @pytest.mark.asyncio
 async def test_api_key_required(client):
     response = await client.get("/api/v1/artists")
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("placeholder", ["", "change-me"])
+async def test_startup_refuses_placeholder_api_key(monkeypatch, placeholder):
+    monkeypatch.setattr(settings, "app_api_key", placeholder)
+    with pytest.raises(RuntimeError, match="APP_API_KEY"):
+        async with lifespan(app):
+            pass
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("placeholder", ["", "change-me"])
+async def test_placeholder_api_key_is_rejected(client, monkeypatch, placeholder):
+    monkeypatch.setattr(settings, "app_api_key", placeholder)
+    response = await client.get("/api/v1/artists", headers={"X-API-Key": placeholder})
     assert response.status_code == 401
 
 

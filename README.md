@@ -24,7 +24,8 @@ Dependencies are resolved with `exclude-newer = "2 weeks"` (see `[tool.uv]` in `
 
 ```bash
 cp .env.example .env
-# In .env set APP_API_KEY and TICKETMASTER_API_KEY (if using Ticketmaster).
+# In .env set APP_API_KEY (required; any long random string you choose)
+# and TICKETMASTER_API_KEY (if using Ticketmaster).
 uv sync --extra dev
 uv run alembic upgrade head
 uv run uvicorn app.main:app --host 127.0.0.1 --port 8182
@@ -46,6 +47,7 @@ editing `.env`. Never commit `.env`.
 
 ```bash
 cp .env.example .env
+# In .env set APP_API_KEY (required), e.g. to the output of: openssl rand -hex 32
 mkdir -p data
 docker compose up -d --build
 curl http://localhost:8182/health
