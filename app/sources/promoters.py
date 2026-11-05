@@ -12,8 +12,8 @@ from app.core.config import settings
 from app.matching.matcher import match_event_to_artists
 from app.matching.normalization import strict_normalize
 from app.schemas.events import EventParticipant, EventStatus, RawEvent, SourceHealth
-from app.sources.base import SourceAdapter, WatchedArtistRef
-from app.sources.crawler import PublicCrawler, SourceDegradedError
+from app.sources.base import SourceAdapter, SourceDegradedError, WatchedArtistRef
+from app.sources.crawler import PublicCrawler
 
 KNOCKOUT_URL = "https://knockoutprod.net/public/index.php/pl/concert"
 FOURCE_URL = "https://fource.pl/pl/events/"

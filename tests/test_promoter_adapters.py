@@ -10,8 +10,7 @@ from app.core.config import settings
 from app.matching.matcher import match_event_to_artists
 from app.schemas.events import EventStatus
 from app.services.scan_service import _run_adapter
-from app.sources.base import WatchedArtistRef
-from app.sources.crawler import SourceDegradedError
+from app.sources.base import SourceDegradedError, WatchedArtistRef
 from app.sources.promoters import (
     FOURCE_URL,
     KNOCKOUT_URL,

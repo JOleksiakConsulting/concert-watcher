@@ -13,7 +13,7 @@ from app.models import ScanRun, ScanSourceRun, WatchedArtist
 from app.schemas.events import RawEvent
 from app.schemas.scan import ScanRequest, ScanResponse, SourceScanResult
 from app.services.event_pipeline import process_events
-from app.sources.base import SourceAdapter, WatchedArtistRef
+from app.sources.base import SourceAdapter, SourceDegradedError, WatchedArtistRef
 from app.sources.registry import build_adapters
 
 _scan_lock = asyncio.Lock()
@@ -31,7 +31,7 @@ def _safe_adapter_error(exc: Exception) -> str:
         return "Source request timed out"
     if isinstance(exc, httpx.RequestError):
         return f"Source request failed ({type(exc).__name__})"
-    if isinstance(exc, NotImplementedError):
+    if isinstance(exc, SourceDegradedError):
         return str(exc)
     return f"Source adapter failed ({type(exc).__name__})"
 
@@ -82,7 +82,7 @@ async def _run_adapter(
             http_requests,
             events,
         )
-    except NotImplementedError as exc:
+    except SourceDegradedError as exc:
         duration_ms = int((time.perf_counter() - start) * 1000)
         return (
             SourceScanResult(

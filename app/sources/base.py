@@ -3,6 +3,10 @@ from abc import ABC, abstractmethod
 from app.schemas.events import RawEvent, SourceHealth
 
 
+class SourceDegradedError(Exception):
+    """Source is configured but cannot currently be read reliably."""
+
+
 class WatchedArtistRef:
     """Lightweight artist reference passed to source adapters."""
 

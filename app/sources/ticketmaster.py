@@ -7,7 +7,7 @@ import httpx
 
 from app.core.config import settings
 from app.schemas.events import EventParticipant, EventStatus, RawEvent, SourceHealth
-from app.sources.base import SourceAdapter, WatchedArtistRef
+from app.sources.base import SourceAdapter, SourceDegradedError, WatchedArtistRef
 
 TM_FEED_URL = "https://app.ticketmaster.com/discovery-feed/v2/events.json"
 
@@ -161,7 +161,7 @@ class TicketmasterAdapter(SourceAdapter):
     ) -> list[RawEvent]:
         del watched_artists
         if not settings.ticketmaster_api_key:
-            raise NotImplementedError("TICKETMASTER_API_KEY not configured")
+            raise SourceDegradedError("TICKETMASTER_API_KEY not configured")
 
         params = {
             "apikey": settings.ticketmaster_api_key,

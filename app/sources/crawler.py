@@ -10,10 +10,7 @@ from urllib.robotparser import RobotFileParser
 import httpx
 
 from app.core.config import settings
-
-
-class SourceDegradedError(NotImplementedError):
-    """Source cannot currently be read reliably without browser automation."""
+from app.sources.base import SourceDegradedError
 
 
 class PublicCrawler:

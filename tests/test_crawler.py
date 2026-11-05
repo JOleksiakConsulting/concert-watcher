@@ -5,7 +5,8 @@ import pytest
 import respx
 
 from app.core.config import settings
-from app.sources.crawler import PublicCrawler, SourceDegradedError
+from app.sources.base import SourceDegradedError
+from app.sources.crawler import PublicCrawler
 
 ORIGIN = "https://promoter.test"
 

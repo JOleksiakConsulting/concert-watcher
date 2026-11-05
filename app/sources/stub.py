@@ -1,7 +1,7 @@
-"""Explicitly unsupported adapters that are replaced in later milestones."""
+"""Placeholders for sources without an adapter; enabling one reports the source as degraded."""
 
 from app.schemas.events import RawEvent, SourceHealth
-from app.sources.base import SourceAdapter, WatchedArtistRef
+from app.sources.base import SourceAdapter, SourceDegradedError, WatchedArtistRef
 
 
 class StubSourceAdapter(SourceAdapter):
@@ -19,7 +19,7 @@ class StubSourceAdapter(SourceAdapter):
         watched_artists: list[WatchedArtistRef],
     ) -> list[RawEvent]:
         del country_code, watched_artists
-        raise NotImplementedError(f"{self.name} adapter not implemented")
+        raise SourceDegradedError(f"{self.name} adapter not implemented")
 
     async def healthcheck(self) -> SourceHealth:
         if not self._enabled:
