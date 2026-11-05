@@ -24,6 +24,7 @@ from app.models import (
     WatchedArtist,
 )
 from app.schemas.events import EventStatus, RawEvent
+from app.sources.base import WatchedArtistRef
 
 
 @dataclass
@@ -237,7 +238,7 @@ async def _refresh_pending_source_links(
 async def process_events(
     session: AsyncSession,
     raw_events: list[RawEvent],
-    artists: list,
+    artists: list[WatchedArtistRef],
 ) -> ProcessResult:
     result = ProcessResult()
     now = datetime.now(UTC)
