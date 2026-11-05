@@ -1,0 +1,49 @@
+{
+  "events": [
+    {
+      "eventId": "tm-chelsea-wolfe-001",
+      "eventName": "Chelsea Wolfe - The Dark World Tour",
+      "eventStatus": "onsale",
+      "eventStartLocalDate": "2026-12-03",
+      "eventStartLocalTime": "20:00:00",
+      "primaryEventUrl": "https://www.ticketmaster.pl/event/chelsea-wolfe",
+      "venue": {
+        "venueName": "Progresja",
+        "venueCity": "Warszawa",
+        "venueCountryCode": "PL",
+        "venueTimezone": "Europe/Warsaw",
+        "venueStreet": "Zimna 1"
+      },
+      "attractions": [
+        {
+          "attraction": {
+            "attractionId": "attr-001",
+            "attractionName": "Chelsea Wolfe"
+          }
+        }
+      ]
+    },
+    {
+      "eventId": "tm-health-festival-001",
+      "eventName": "Health & Wellness Festival",
+      "eventStatus": "onsale",
+      "eventStartLocalDate": "2026-11-15",
+      "eventStartLocalTime": "12:00:00",
+      "primaryEventUrl": "https://www.ticketmaster.pl/event/health-festival",
+      "venue": {
+        "venueName": "Torwar",
+        "venueCity": "Warszawa",
+        "venueCountryCode": "PL",
+        "venueTimezone": "Europe/Warsaw"
+      },
+      "attractions": [
+        {
+          "attraction": {
+            "attractionId": "attr-002",
+            "attractionName": "Various Artists"
+          }
+        }
+      ]
+    }
+  ]
+}
