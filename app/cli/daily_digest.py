@@ -42,13 +42,14 @@ async def _request_with_retries(
     *,
     json: dict[str, Any] | None = None,
     attempts: int = 3,
+    retry_read_timeout: bool = True,
 ) -> httpx.Response:
     response: httpx.Response | None = None
     for attempt in range(attempts):
         try:
             response = await client.request(method, path, json=json)
-        except httpx.RequestError:
-            if attempt == attempts - 1:
+        except httpx.RequestError as exc:
+            if attempt == attempts - 1 or (not retry_read_timeout and isinstance(exc, httpx.ReadTimeout)):
                 raise
             await asyncio.sleep(2**attempt)
             continue
@@ -122,6 +123,8 @@ async def run_daily_digest(
                 "country_codes": [country.strip().upper() for country in country_codes if country.strip()],
                 "sources": [source.strip() for source in sources if source.strip()] or None,
             },
+            # The API keeps scanning after a read timeout, so a retry would only hit 409.
+            retry_read_timeout=False,
         )
         if scan_response.status_code == 409:
             return DailyDigestResult(status="scan_in_progress", notification_ids=[])
@@ -263,6 +266,12 @@ def main(argv: Sequence[str] | None = None) -> int:
                 on_digest=(lambda digest: print(digest.text)) if args.dry_run else None,
             )
         )
+    except httpx.ReadTimeout:
+        print(
+            "Daily digest failed: no API response within DIGEST_HTTP_TIMEOUT_SECONDS; the scan may still be running.",
+            file=sys.stderr,
+        )
+        return 1
     except (httpx.HTTPError, OSError, ValueError) as exc:
         print(f"Daily digest failed: {type(exc).__name__}: {exc}", file=sys.stderr)
         return 1

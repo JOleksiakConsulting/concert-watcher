@@ -269,6 +269,26 @@ async def test_run_daily_digest_retries_request_error(
     assert delays == [1]
 
 
+@pytest.mark.asyncio
+@respx.mock
+async def test_run_daily_digest_does_not_retry_scan_after_read_timeout():
+    scan_route = respx.post("http://test/api/v1/scan").mock(side_effect=httpx.ReadTimeout("scan still running"))
+    pending_route = respx.get("http://test/api/v1/notifications/pending?limit=200").mock(
+        return_value=httpx.Response(200, json=[])
+    )
+
+    with pytest.raises(httpx.ReadTimeout):
+        await run_daily_digest(
+            api_base_url="http://test",
+            api_key="test-key",
+            country_codes=["PL"],
+            sources=["ticketmaster"],
+        )
+
+    assert scan_route.call_count == 1
+    assert not pending_route.called
+
+
 def test_main_rejects_conflicting_smtp_flags_before_api_request(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
