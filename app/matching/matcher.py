@@ -6,7 +6,8 @@ from app.matching.normalization import strict_normalize
 from app.schemas.events import EventParticipant, RawEvent
 from app.sources.base import WatchedArtistRef
 
-SHORT_ARTIST_NAMES = frozenset({"health", "air", "yes", "live", "!!!"})
+# Long enough to pass MIN_FUZZY_NAME_LENGTH but too generic to fuzzy-match.
+GENERIC_ARTIST_NAMES = frozenset({"health"})
 FUZZY_THRESHOLD = 92
 MIN_FUZZY_NAME_LENGTH = 6
 
@@ -18,8 +19,8 @@ class ArtistMatch:
     match_method: str
 
 
-def _is_short_name(normalized: str) -> bool:
-    return len(normalized) < MIN_FUZZY_NAME_LENGTH or normalized in SHORT_ARTIST_NAMES
+def _excluded_from_fuzzy(normalized: str) -> bool:
+    return len(normalized) < MIN_FUZZY_NAME_LENGTH or normalized in GENERIC_ARTIST_NAMES
 
 
 def _exact_canonical(participant_norm: str, artist: WatchedArtistRef) -> bool:
@@ -31,7 +32,7 @@ def _exact_alias(participant_norm: str, artist: WatchedArtistRef) -> bool:
 
 
 def _fuzzy_match(participant_norm: str, artist: WatchedArtistRef) -> tuple[bool, float]:
-    if _is_short_name(artist.normalized_name):
+    if _excluded_from_fuzzy(artist.normalized_name):
         return False, 0.0
     if len(participant_norm) < MIN_FUZZY_NAME_LENGTH:
         return False, 0.0
